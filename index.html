@@ -125,6 +125,9 @@
         <b id="brandName">[Kr]미샤서버/Misha server</b>
       </div>
       <div class="actions">
+        <button class="btn" id="langKo" type="button">KO</button>
+        <button class="btn" id="langEn" type="button">EN</button>
+        <button class="btn" id="langJa" type="button">JP</button>
         <span class="pill mono" id="updatedAt">—</span>
         <button class="btn" id="refreshBtn" type="button">새로고침</button>
         <a class="btn discord icon" id="discordBtn" href="#" onclick="return false;" title="디스코드(준비중)">Discord</a>
@@ -147,7 +150,7 @@
 
     <div class="grid">
       <section class="card">
-        <h3>SERVER STATUS</h3>
+        <h3 id="statusHeading">SERVER STATUS</h3>
         <div class="kpi">
           <div class="badge">
             <span class="led ok" id="led"></span>
@@ -156,17 +159,17 @@
           <div class="small" id="addr">Query: 64.31.11.50:28245</div>
         </div>
         <div class="kpiRow" style="margin-top:12px">
-          <div class="kbox"><div class="k">Players</div><div class="v" id="players">—</div></div>
-          <div class="kbox"><div class="k">Map</div><div class="v" id="map">—</div></div>
-          <div class="kbox"><div class="k">Version</div><div class="v" id="version">—</div></div>
-          <div class="kbox"><div class="k">Bots</div><div class="v" id="bots">—</div></div>
+          <div class="kbox"><div class="k" id="playersLabel">Players</div><div class="v" id="players">—</div></div>
+          <div class="kbox"><div class="k" id="mapLabel">Map</div><div class="v" id="map">—</div></div>
+          <div class="kbox"><div class="k" id="versionLabel">Version</div><div class="v" id="version">—</div></div>
+          <div class="kbox"><div class="k" id="botsLabel">Bots</div><div class="v" id="bots">—</div></div>
         </div>
         <div class="small mono" id="playersList" style="margin-top:10px"></div>
       </section>
 
       <section class="card span7">
-        <h3>서버 소개 • 주요 기능</h3>
-        <div class="list">
+        <h3 id="featuresHeading">서버 소개 • 주요 기능</h3>
+        <div class="list" id="featuresList">
           <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
             <div style="font-weight:800">🎮 미샤서버(Misha Server)</div>
             <div class="small" style="margin-top:6px">저희 서버는 플레이어분들께 다채로운 재미와 편의성을 제공하기 위해 다음과 같은 시스템을 도입하였습니다.</div>
@@ -213,17 +216,17 @@
       </section>
 
       <section class="card span5">
-        <h3>이번 주 하이라이트</h3>
+        <h3 id="highlightsHeading">이번 주 하이라이트</h3>
         <div class="twocol">
           <div class="kbox">
-            <div class="k">Wipe</div>
-            <div class="v">2026-03-14 (2주후)</div>
-            <div class="small">정확한 일정은 운영 공지에 업데이트하세요.</div>
+            <div class="k" id="wipeLabel">Wipe</div>
+            <div class="v" id="wipeValue">2026-03-14 (2주후)</div>
+            <div class="small" id="wipeDesc">정확한 일정은 운영 공지에 업데이트하세요.</div>
           </div>
           <div class="kbox">
-            <div class="k">Rules</div>
-            <div class="v">3가지</div>
-            <div class="small">1. 즐겁게 · 2. 파이팅 넘치게 · 3. 핵 금지</div>
+            <div class="k" id="rulesLabel">Rules</div>
+            <div class="v" id="rulesValue">3가지</div>
+            <div class="small" id="rulesDesc">1. 즐겁게 · 2. 파이팅 넘치게 · 3. 핵 금지</div>
           </div>
         </div>
         <!-- report hint inserted below highlights -->
@@ -232,8 +235,8 @@
             <img src="./assets/report_hint.jpg" alt="report hint" style="width:100%;height:auto;border-radius:6px;box-shadow:0 6px 16px rgba(0,0,0,.6)" />
           </div>
           <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-            <div class="small" style="font-weight:700;margin-bottom:6px">신고 방법</div>
-            <div class="small">인게임에서 <b>F7</b> 키를 눌러 플레이어를 신고해 주세요. 신고 시 가능한 증거(스크린샷, 녹화, 시간대)를 함께 제출하시면 처리에 도움이 됩니다.</div>
+            <div class="small" style="font-weight:700;margin-bottom:6px" id="reportTitle">신고 방법</div>
+            <div class="small" id="reportBody">인게임에서 <b>F7</b> 키를 눌러 플레이어를 신고해 주세요. 신고 시 가능한 증거(스크린샷, 녹화, 시간대)를 함께 제출하시면 처리에 도움이 됩니다.</div>
           </div>
         </div>
       </section>
@@ -242,27 +245,177 @@
     </div>
 
     <footer>
-      <div>Powered by OpenClaw</div>
+      <div id="footerText">Powered by OpenClaw</div>
     </footer>
   </div>
 
 <script>
+let currentLang = localStorage.getItem('lang') || 'ko';
+let currentConfig = {};
+
+const i18n = {
+  ko: {
+    title: '[Kr]미샤서버/Misha server',
+    refresh: '새로고침',
+    heroDescFallback: '2021년 이후 다시 준비중인 서버',
+    balancePrefix: '밸런스: ',
+    wipePrefix: '위프: ',
+    statusHeading: 'SERVER STATUS',
+    statusOnline: 'Online',
+    statusOffline: 'Offline',
+    statusUnknown: '상태 확인 불가',
+    labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    featuresHeading: '서버 소개 • 주요 기능',
+    highlightsHeading: '이번 주 하이라이트',
+    wipeLabel:'Wipe', wipeValue:'2026-03-14 (2주후)', wipeDesc:'정확한 일정은 운영 공지에 업데이트하세요.',
+    rulesLabel:'Rules', rulesValue:'3가지', rulesDesc:'1. 즐겁게 · 2. 파이팅 넘치게 · 3. 핵 금지',
+    reportTitle:'신고 방법',
+    reportBody:'인게임에서 <b>F7</b> 키를 눌러 플레이어를 신고해 주세요. 신고 시 가능한 증거(스크린샷, 녹화, 시간대)를 함께 제출하시면 처리에 도움이 됩니다.',
+    footer:'Powered by OpenClaw',
+    playersListPrefix:'Players: ',
+    discordPending:'디스코드 링크는 아직 준비중입니다.',
+    joinPrefix:'서버 접속: ',
+    featuresHtml:`
+      <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <div style="font-weight:800">🎮 미샤서버(Misha Server)</div>
+        <div class="small" style="margin-top:6px">저희 서버는 플레이어분들께 다채로운 재미와 편의성을 제공하기 위해 다음과 같은 시스템을 도입하였습니다.</div>
+      </div>
+      <div class="item" style="flex-direction:column;align-items:flex-start">
+        <b>🏠 PVE 레이드 베이스 (Raidable Bases)</b>
+        <div class="small">서버 곳곳에 자동으로 생성되는 NPC 요새를 공략해 보세요!</div>
+      </div>
+      <div class="item" style="flex-direction:column;align-items:flex-start">
+        <b>📦 아이템 및 자원 관리 (StackSize / Gather)</b>
+        <div class="small">지루한 파밍은 줄이고 효율적인 생존을 지원합니다.</div>
+      </div>
+      <div class="item" style="flex-direction:column;align-items:flex-start">
+        <b>🛠 편의 및 유틸리티</b>
+        <div class="small">CopyPaste, TimeOfDay, AdminRadar 등 운영/플레이 편의 기능을 제공합니다.</div>
+      </div>
+      <div class="item" style="flex-direction:column;align-items:flex-start">
+        <b>📢 정보 알림 및 소통</b>
+        <div class="small">DeathNotes, Welcomer, BetterChat으로 소통과 정보 공유를 돕습니다.</div>
+      </div>`
+  },
+  en: {
+    title: '[Kr] Misha Server',
+    refresh: 'Refresh',
+    heroDescFallback: 'A server being prepared again since 2021',
+    balancePrefix: 'Balance: ',
+    wipePrefix: 'Wipe: ',
+    statusHeading: 'SERVER STATUS',
+    statusOnline: 'Online',
+    statusOffline: 'Offline',
+    statusUnknown: 'Status unavailable',
+    labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    featuresHeading: 'Server Overview • Features',
+    highlightsHeading: 'This Week Highlights',
+    wipeLabel:'Wipe', wipeValue:'2026-03-14 (in 2 weeks)', wipeDesc:'Exact schedule will be updated in announcements.',
+    rulesLabel:'Rules', rulesValue:'3 rules', rulesDesc:'1. Have fun · 2. Be competitive · 3. No cheats',
+    reportTitle:'How to Report',
+    reportBody:'Press <b>F7</b> in-game to report a player. Please include available evidence (screenshots, recordings, and time range) for faster handling.',
+    footer:'Powered by OpenClaw',
+    playersListPrefix:'Players: ',
+    discordPending:'Discord link is not ready yet.',
+    joinPrefix:'Connect: ',
+    featuresHtml:`
+      <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <div style="font-weight:800">🎮 Misha Server</div>
+        <div class="small" style="margin-top:6px">We provide varied gameplay and quality-of-life systems for a better Rust experience.</div>
+      </div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>🏠 PVE Raidable Bases</b><div class="small">NPC raid bases spawn around the map with rewarding loot.</div></div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>📦 Item & Resource Management</b><div class="small">StackSize and Gather settings reduce grind and improve progression.</div></div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>🛠 Utility</b><div class="small">CopyPaste, TimeOfDay, and AdminRadar support fair and smooth gameplay.</div></div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>📢 Notifications & Communication</b><div class="small">DeathNotes, Welcomer, and BetterChat improve communication.</div></div>`
+  },
+  ja: {
+    title: '[Kr] ミシャサーバー',
+    refresh: '更新',
+    heroDescFallback: '2021年以降、再始動準備中のサーバー',
+    balancePrefix: 'バランス: ',
+    wipePrefix: 'ワイプ: ',
+    statusHeading: 'SERVER STATUS',
+    statusOnline: 'Online',
+    statusOffline: 'Offline',
+    statusUnknown: '状態を確認できません',
+    labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    featuresHeading: 'サーバー紹介 • 主な機能',
+    highlightsHeading: '今週のハイライト',
+    wipeLabel:'Wipe', wipeValue:'2026-03-14（2週間後）', wipeDesc:'正確な日程は運営告知で更新されます。',
+    rulesLabel:'Rules', rulesValue:'3つ', rulesDesc:'1. 楽しく · 2. 全力で · 3. チート禁止',
+    reportTitle:'通報方法',
+    reportBody:'ゲーム内で <b>F7</b> キーを押して通報してください。処理を円滑にするため、証拠（スクリーンショット・録画・時間帯）も添付してください。',
+    footer:'Powered by OpenClaw',
+    playersListPrefix:'Players: ',
+    discordPending:'Discordリンクはまだ準備中です。',
+    joinPrefix:'接続先: ',
+    featuresHtml:`
+      <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <div style="font-weight:800">🎮 ミシャサーバー (Misha Server)</div>
+        <div class="small" style="margin-top:6px">多様な楽しさと利便性を提供するため、以下のシステムを導入しています。</div>
+      </div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>🏠 PVE レイドベース</b><div class="small">マップ各所にNPC要塞が自動生成され、攻略報酬を獲得できます。</div></div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>📦 アイテム/資源管理</b><div class="small">StackSize/Gatherで収集負担を軽減します。</div></div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>🛠 便利機能</b><div class="small">CopyPaste、TimeOfDay、AdminRadarで快適なプレイ環境を提供します。</div></div>
+      <div class="item" style="flex-direction:column;align-items:flex-start"><b>📢 通知とコミュニケーション</b><div class="small">DeathNotes、Welcomer、BetterChatで情報共有を強化します。</div></div>`
+  }
+};
+
+function t(){ return i18n[currentLang] || i18n.ko; }
+
+function applyLanguage(){
+  const L = t();
+  document.documentElement.lang = currentLang;
+  document.title = L.title;
+  document.getElementById('refreshBtn').textContent = L.refresh;
+  document.getElementById('statusHeading').textContent = L.statusHeading;
+  document.getElementById('playersLabel').textContent = L.labels.players;
+  document.getElementById('mapLabel').textContent = L.labels.map;
+  document.getElementById('versionLabel').textContent = L.labels.version;
+  document.getElementById('botsLabel').textContent = L.labels.bots;
+  document.getElementById('featuresHeading').textContent = L.featuresHeading;
+  document.getElementById('featuresList').innerHTML = L.featuresHtml;
+  document.getElementById('highlightsHeading').textContent = L.highlightsHeading;
+  document.getElementById('wipeLabel').textContent = L.wipeLabel;
+  document.getElementById('wipeValue').textContent = L.wipeValue;
+  document.getElementById('wipeDesc').textContent = L.wipeDesc;
+  document.getElementById('rulesLabel').textContent = L.rulesLabel;
+  document.getElementById('rulesValue').textContent = L.rulesValue;
+  document.getElementById('rulesDesc').textContent = L.rulesDesc;
+  document.getElementById('reportTitle').textContent = L.reportTitle;
+  document.getElementById('reportBody').innerHTML = L.reportBody;
+  document.getElementById('footerText').textContent = L.footer;
+
+  const hd = document.getElementById('heroDesc');
+  if (hd && !currentConfig.server_tagline) hd.textContent = L.heroDescFallback;
+
+  const bt = document.getElementById('balanceText');
+  if (bt && currentConfig.balance) bt.textContent = L.balancePrefix + currentConfig.balance;
+  const wt = document.getElementById('wipeText');
+  if (wt && currentConfig.wipe_schedule) wt.textContent = L.wipePrefix + currentConfig.wipe_schedule;
+
+  document.querySelectorAll('.actions .btn').forEach(b=>b.style.outline='none');
+  const active = document.getElementById(currentLang==='ko'?'langKo':currentLang==='en'?'langEn':'langJa');
+  if(active) active.style.outline='2px solid rgba(255,255,255,.35)';
+}
+
 async function loadConfig(){
   try{
     const res = await fetch('./config.json?ts='+Date.now(), {cache:'no-store'});
     if(!res.ok) return;
     const c = await res.json();
+    currentConfig = c;
 
-    document.title = c.server_display_name || document.title;
-    const bn=document.getElementById('brandName'); if(bn && c.server_display_name) bn.textContent=c.server_display_name;
-    const hp=document.getElementById('heroTitle'); if(hp && c.server_display_name){
-      // keep existing formatting if possible
-      hp.innerHTML = (c.server_display_name.includes('/') ? c.server_display_name.replace('/', ' <span>/</span>') : c.server_display_name);
+    if(c.server_display_name){
+      document.getElementById('brandName').textContent = c.server_display_name;
+      document.getElementById('heroTitle').innerHTML = c.server_display_name;
     }
-    const hd=document.getElementById('heroDesc'); if(hd && c.server_tagline) hd.textContent=c.server_tagline;
+    const hd=document.getElementById('heroDesc');
+    if(hd) hd.textContent = c.server_tagline || t().heroDescFallback;
+
     const ca=document.getElementById('connectAddr'); if(ca && c.connect_address) ca.textContent=c.connect_address;
-    const bt=document.getElementById('balanceText'); if(bt && c.balance) bt.textContent='밸런스: '+c.balance;
-    const wt=document.getElementById('wipeText'); if(wt && c.wipe_schedule) wt.textContent='위프: '+c.wipe_schedule;
+    const bt=document.getElementById('balanceText'); if(bt && c.balance) bt.textContent=t().balancePrefix + c.balance;
+    const wt=document.getElementById('wipeText'); if(wt && c.wipe_schedule) wt.textContent=t().wipePrefix + c.wipe_schedule;
 
     const addr=document.getElementById('addr'); if(addr && c.query_address) addr.textContent='Query: '+c.query_address;
 
@@ -270,22 +423,15 @@ async function loadConfig(){
     if(discordBtn){
       discordBtn.onclick = () => {
         const discord = (c.discord_invite||'').trim();
-        if(discord){
-          window.open(discord, '_blank');
-        } else {
-          alert('디스코드 링크는 아직 준비중입니다.');
-        }
+        if(discord){ window.open(discord, '_blank'); }
+        else { alert(t().discordPending); }
         return false;
       };
     }
 
     const join=document.getElementById('joinBtn');
     if(join){
-      join.onclick = () => {
-        const msg = '서버 접속: ' + (c.connect_address||'');
-        alert(msg);
-        return false;
-      };
+      join.onclick = () => { alert(t().joinPrefix + (c.connect_address||'')); return false; };
     }
   } catch(e) {}
 }
@@ -300,7 +446,7 @@ async function loadStatus(){
     const d = await res.json();
 
     const online = d.online === true;
-    statusText.textContent = online ? 'Online' : 'Offline';
+    statusText.textContent = online ? t().statusOnline : t().statusOffline;
     led.className = 'led ' + (online ? 'ok' : 'bad');
 
     updatedAt.textContent = d.updated_at || '—';
@@ -309,16 +455,28 @@ async function loadStatus(){
     document.getElementById('version').textContent = d.version || '—';
     document.getElementById('bots').textContent = (d.bots ?? '—');
 
-    const list = (d.player_names && d.player_names.length) ? ('Players: ' + d.player_names.join(', ')) : '';
+    const list = (d.player_names && d.player_names.length) ? (t().playersListPrefix + d.player_names.join(', ')) : '';
     document.getElementById('playersList').textContent = list;
   } catch(e){
-    statusText.textContent = '상태 확인 불가';
+    statusText.textContent = t().statusUnknown;
     led.className = 'led bad';
     updatedAt.textContent = '—';
   }
 }
 
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  applyLanguage();
+  loadStatus();
+}
+
+document.getElementById('langKo').addEventListener('click', ()=>setLang('ko'));
+document.getElementById('langEn').addEventListener('click', ()=>setLang('en'));
+document.getElementById('langJa').addEventListener('click', ()=>setLang('ja'));
 document.getElementById('refreshBtn').addEventListener('click', loadStatus);
+
+applyLanguage();
 loadConfig();
 loadStatus();
 setInterval(loadStatus, 60000);
