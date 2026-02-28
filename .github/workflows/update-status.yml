@@ -1,36 +1,44 @@
 name: Update status.json
+
 on:
-schedule:
-- cron: '*/10 * * * *'   # every 10 minutes
-workflow_dispatch:
+  schedule:
+    - cron: '*/10 * * * *' # every 10 minutes
+  workflow_dispatch:
 
 jobs:
-update:
-runs-on: ubuntu-latest
-steps:
-- name: Checkout
-uses: actions/checkout@v4
-with:
-fetch-depth: 0
-- name: Setup Python
-uses: actions/setup-python@v4
-with:
-python-version: '3.11'
-- name: Install deps
-run: |
-python -m pip install --upgrade pip
-pip install a2s
-- name: Run update script
-run: |
-python update_status_json.py
-- name: Commit status
-run: |
-git config user.name (http://user.name/) "github-actions[bot]"
-git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-if git status --porcelain | grep status.json; then
-git add status.json
-git commit -m "Update status.json"
-git push
-else
-echo "No change"
-fi
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install a2s
+
+      - name: Run update script
+        run: |
+          python update_status_json.py
+
+      - name: Commit status
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git status --porcelain | grep -q "status.json"; then
+            git add status.json
+            git commit -m "Update status.json"
+            git push
+          else
+            echo "No change"
+          fi
