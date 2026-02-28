@@ -8,8 +8,27 @@ STATUS_PATH = SITE_DIR / 'status.json'
 
 CMD = ['cmd','/c','set PYTHONIOENCODING=utf-8&& python C:\\Users\\INHA\\.openclaw\\workspace\\query_rust_a2s.py']
 
-out = subprocess.run(CMD, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=30)
-lines = (out.stdout or '').splitlines()
+from time import sleep
+
+RETRIES = 3
+BACKOFF = 2  # seconds multiplier
+
+attempt = 0
+out = None
+lines = []
+while attempt < RETRIES:
+    attempt += 1
+    try:
+        out = subprocess.run(CMD, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=30)
+        if out.returncode == 0 and (out.stdout or '').strip():
+            break
+    except Exception as e:
+        # swallow and retry
+        out = None
+    if attempt < RETRIES:
+        sleep(BACKOFF * attempt)
+
+lines = (out.stdout or '').splitlines() if out and out.stdout else []
 
 data = {
     'online': False,
