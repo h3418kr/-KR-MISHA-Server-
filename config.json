@@ -1,0 +1,16 @@
+{
+  "server_display_name": "[Kr]미샤서버/Misha server",
+  "server_tagline": "2021년 이후 다시 준비중인 서버",
+  "connect_address": "64.31.11.50:28310",
+  "query_address": "64.31.11.50:28245",
+  "discord_invite": "https://discord.gg/ZFDQacRDCB",
+  "wipe_schedule": "2주",
+  "balance": "바닐라/가벼운 QoL",
+  "rules": [
+    "핵 사용 금지"
+  ],
+  "announcements": [
+    {"title": "서버 상태", "note": "준비중"},
+    {"title": "위프", "note": "2주"}
+  ]
+}

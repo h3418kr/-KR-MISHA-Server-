@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>[Kr]미샤서버/Misha server</title>
+  <style>
+    :root{
+      --bg:#07080c;
+      --bg2:#0b0d14;
+      --card:rgba(18,20,30,.86);
+      --stroke:rgba(255,255,255,.08);
+      --text:#e9ecff;
+      --muted:rgba(233,236,255,.65);
+      --red:#ff3b30;
+      --orange:#ff7a18;
+      --green:#35d07f;
+      --shadow:0 18px 40px rgba(0,0,0,.55);
+      --radius:18px;
+      --radius2:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Malgun Gothic",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 35% 10%, rgba(255,80,60,.16), transparent 55%),
+        radial-gradient(900px 600px at 70% 30%, rgba(255,160,60,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2) 30%, var(--bg));
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 70px}
+
+    /* top nav */
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(255,59,48,.12)}
+    .brand b{letter-spacing:.4px}
+    .pill{border:1px solid var(--stroke);background:rgba(255,255,255,.04);padding:7px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
+    .actions{display:flex;align-items:center;gap:10px}
+    .btn{border:1px solid var(--stroke);background:rgba(255,255,255,.04);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+    .btn.primary{background:linear-gradient(180deg,#ff7a18,#ff4d00);border:none;color:#190800}
+    .btn.icon::before{content:'';width:16px;height:16px;display:inline-block;background:currentColor;opacity:.9;mask-size:contain;mask-repeat:no-repeat;mask-position:center;}
+    .btn.discord.icon::before{mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36"><path fill="%23000" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.09 0A72.37 72.37 0 0 0 45.66 0a105.89 105.89 0 0 0-26.27 8.09C2.79 32.65-1.73 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2.05a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2.05a68.68 68.68 0 0 1-10.87 5.19 77.28 77.28 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.66-27.36-4.55-51.09-18.38-72.95ZM42.45 65.69c-5.01 0-9.14-4.59-9.14-10.2s4.03-10.2 9.14-10.2c5.12 0 9.24 4.61 9.14 10.2 0 5.61-4.03 10.2-9.14 10.2Zm42.24 0c-5.01 0-9.14-4.59-9.14-10.2s4.03-10.2 9.14-10.2c5.12 0 9.24 4.61 9.14 10.2 0 5.61-4.03 10.2-9.14 10.2Z"/></svg>');}
+
+    /* hero */
+        /* hero image (native aspect, no crop) */
+    .heroImgWrap{margin-top:14px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 14px 30px rgba(0,0,0,.45);background:rgba(0,0,0,.22)}
+    .heroImg{display:block;width:100%;height:auto;max-width:100%}
+
+    .hero{
+      border:1px solid var(--stroke);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)),
+        radial-gradient(900px 500px at 50% 0%, rgba(255,122,24,.20), transparent 60%);
+      border-radius:24px;
+      padding:28px 22px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;inset:-1px;
+      background:radial-gradient(900px 380px at 50% -20%, rgba(255,255,255,.10), transparent 60%);
+      pointer-events:none;
+    }
+    .hero h1{margin:0;font-size:44px;letter-spacing:2px}
+    .hero h1 span{display:block;font-size:12px;letter-spacing:5px;color:rgba(233,236,255,.55);margin-top:6px}
+    .hero p{max-width:720px;color:var(--muted);margin:12px 0 16px;line-height:1.5}
+    .hero .meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+    /* grid */
+    .grid{display:grid;grid-template-columns:repeat(12, 1fr);gap:12px;margin-top:12px}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);padding:14px 14px;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+    .card h3{margin:0 0 10px;font-size:13px;letter-spacing:1.2px;color:rgba(233,236,255,.72)}
+    .kpi{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between}
+    .big{font-size:28px;font-weight:900}
+    .small{font-size:12px;color:var(--muted)}
+
+    .kpiRow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .kbox{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:12px}
+    .kbox .k{font-size:12px;color:var(--muted)}
+    .kbox .v{margin-top:4px;font-size:20px;font-weight:900}
+
+    .twocol{display:grid;grid-template-columns:1fr;gap:12px}
+
+    /* table-like list */
+    .list{display:flex;flex-direction:column;gap:10px}
+    .item{display:flex;justify-content:space-between;gap:10px;border:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.15);border-radius:14px;padding:10px 12px}
+    .item b{font-size:13px}
+
+    /* FAQ */
+    .faq{margin-top:14px}
+    details{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);border-radius:14px;padding:10px 12px}
+    details+details{margin-top:10px}
+    summary{cursor:pointer;font-weight:800}
+    details p{margin:8px 0 0;color:var(--muted);line-height:1.45}
+
+    /* responsive */
+    @media(min-width:820px){
+      .card.span4{grid-column:span 4}
+      .card.span5{grid-column:span 5}
+      .card.span7{grid-column:span 7}
+      .card.span6{grid-column:span 6}
+      .twocol{grid-template-columns:1.2fr .8fr}
+    }
+
+    .badge{display:inline-flex;align-items:center;gap:8px}
+    .led{width:10px;height:10px;border-radius:50%}
+    .led.ok{background:var(--green);box-shadow:0 0 0 4px rgba(53,208,127,.14)}
+    .led.bad{background:var(--red);box-shadow:0 0 0 4px rgba(255,59,48,.14)}
+
+    footer{margin-top:18px;color:rgba(233,236,255,.45);font-size:12px;text-align:center}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <span class="dot"></span>
+        <b id="brandName">[Kr]미샤서버/Misha server</b>
+        <span class="pill" id="brandPill">NEWBIE 스타일</span>
+      </div>
+      <div class="actions">
+        <span class="pill mono" id="updatedAt">—</span>
+        <button class="btn" id="refreshBtn" type="button">새로고침</button>
+        <a class="btn discord icon" id="discordBtn" href="#" onclick="return false;" title="디스코드(준비중)">Discord</a>
+        <a class="btn primary" id="joinBtn" href="#" onclick="return false;">JOIN</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1 id="heroTitle">[Kr]미샤서버 <span>Misha server</span></h1>
+      <p id="heroDesc">2021년 이후 다시 준비중인 서버</p>
+      <div class="meta">
+        <span class="pill mono" id="connectAddr">64.31.11.50:28310</span>
+        <span class="pill" id="balanceText">밸런스: 바닐라/가벼운 QoL</span>
+        <span class="pill" id="wipeText">위프: 2주</span>
+      </div>
+      <div class="heroImgWrap">
+        <img class="heroImg" src="./assets/hero.jpg" alt="Misha server banner" />
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h3>SERVER STATUS</h3>
+        <div class="kpi">
+          <div class="badge">
+            <span class="led ok" id="led"></span>
+            <span class="big" id="statusText">Online</span>
+          </div>
+          <div class="small" id="addr">Query: 64.31.11.50:28245</div>
+        </div>
+        <div class="kpiRow" style="margin-top:12px">
+          <div class="kbox"><div class="k">Players</div><div class="v" id="players">—</div></div>
+          <div class="kbox"><div class="k">Map</div><div class="v" id="map">—</div></div>
+          <div class="kbox"><div class="k">Version</div><div class="v" id="version">—</div></div>
+          <div class="kbox"><div class="k">Bots</div><div class="v" id="bots">—</div></div>
+        </div>
+        <div class="small mono" id="playersList" style="margin-top:10px"></div>
+      </section>
+
+      <section class="card span7">
+        <h3>공지 / 패치노트</h3>
+        <div class="list">
+          <div class="item"><b>서버 오픈</b><span class="small">(예) 2026-03-01</span></div>
+          <div class="item"><b>초기 규칙 안내</b><span class="small">핵/버그악용 금지</span></div>
+          <div class="item"><b>이벤트</b><span class="small">추후 공지</span></div>
+        </div>
+      </section>
+
+      <section class="card span5">
+        <h3>이번 주 하이라이트</h3>
+        <div class="twocol">
+          <div class="kbox">
+            <div class="k">Wipe</div>
+            <div class="v">예정</div>
+            <div class="small">정확한 일정은 운영 공지에 업데이트하세요.</div>
+          </div>
+          <div class="kbox">
+            <div class="k">Rules</div>
+            <div class="v">3가지</div>
+            <div class="small">친절한 뉴비 서버 컨셉</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>FAQ</h3>
+        <div class="faq">
+          <details open>
+            <summary>Q. 서버 접속은 어떻게 하나요?</summary>
+            <p>서버 주소(예: 64.31.11.50:28310)를 Rust 클라이언트에서 입력하거나, 디스코드 안내를 따르시면 됩니다.</p>
+          </details>
+          <details>
+            <summary>Q. 위프(초기화)는 언제 하나요?</summary>
+            <p>운영 공지에 공지합니다. 월 1회/주 1회 등 서버 컨셉에 맞춰 기재하세요.</p>
+          </details>
+          <details>
+            <summary>Q. 치트 유저는 어떻게 신고하나요?</summary>
+            <p>디스코드 신고 채널을 운영하는 방식이 가장 편합니다.</p>
+          </details>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div>Local benchmark template inspired by <span class="mono">svy04.github.io</span>. | Powered by OpenClaw</div>
+    </footer>
+  </div>
+
+<script>
+async function loadConfig(){
+  try{
+    const res = await fetch('./config.json?ts='+Date.now(), {cache:'no-store'});
+    if(!res.ok) return;
+    const c = await res.json();
+
+    document.title = c.server_display_name || document.title;
+    const bn=document.getElementById('brandName'); if(bn && c.server_display_name) bn.textContent=c.server_display_name;
+    const hp=document.getElementById('heroTitle'); if(hp && c.server_display_name){
+      // keep existing formatting if possible
+      hp.innerHTML = (c.server_display_name.includes('/') ? c.server_display_name.replace('/', ' <span>/</span>') : c.server_display_name);
+    }
+    const hd=document.getElementById('heroDesc'); if(hd && c.server_tagline) hd.textContent=c.server_tagline;
+    const ca=document.getElementById('connectAddr'); if(ca && c.connect_address) ca.textContent=c.connect_address;
+    const bt=document.getElementById('balanceText'); if(bt && c.balance) bt.textContent='밸런스: '+c.balance;
+    const wt=document.getElementById('wipeText'); if(wt && c.wipe_schedule) wt.textContent='위프: '+c.wipe_schedule;
+
+    const addr=document.getElementById('addr'); if(addr && c.query_address) addr.textContent='Query: '+c.query_address;
+
+    const discordBtn=document.getElementById('discordBtn');
+    if(discordBtn){
+      discordBtn.onclick = () => {
+        const discord = (c.discord_invite||'').trim();
+        if(discord){
+          window.open(discord, '_blank');
+        } else {
+          alert('디스코드 링크는 아직 준비중입니다.');
+        }
+        return false;
+      };
+    }
+
+    const join=document.getElementById('joinBtn');
+    if(join){
+      join.onclick = () => {
+        const msg = '서버 접속: ' + (c.connect_address||'');
+        alert(msg);
+        return false;
+      };
+    }
+  } catch(e) {}
+}
+
+async function loadStatus(){
+  const led = document.getElementById('led');
+  const statusText = document.getElementById('statusText');
+  const updatedAt = document.getElementById('updatedAt');
+  try{
+    const res = await fetch('./status.json?ts='+Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const d = await res.json();
+
+    const online = d.online === true;
+    statusText.textContent = online ? 'Online' : 'Offline';
+    led.className = 'led ' + (online ? 'ok' : 'bad');
+
+    updatedAt.textContent = d.updated_at || '—';
+    document.getElementById('players').textContent = d.players || '—';
+    document.getElementById('map').textContent = d.map || '—';
+    document.getElementById('version').textContent = d.version || '—';
+    document.getElementById('bots').textContent = (d.bots ?? '—');
+
+    const list = (d.player_names && d.player_names.length) ? ('Players: ' + d.player_names.join(', ')) : '';
+    document.getElementById('playersList').textContent = list;
+  } catch(e){
+    statusText.textContent = '상태 확인 불가';
+    led.className = 'led bad';
+    updatedAt.textContent = '—';
+  }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', loadStatus);
+loadConfig();
+loadStatus();
+setInterval(loadStatus, 60000);
+</script>
+</body>
+</html>
