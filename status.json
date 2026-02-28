@@ -1,11 +1,10 @@
 {
-  "online": true,
-  "players": "1/160",
-  "map": "Procedural Map",
-  "version": "2621",
-  "bots": 0,
-  "player_names": [
-    "racquel"
-  ],
-  "updated_at": "2026-02-28 14:23:49"
+  "online": false,
+  "players": null,
+  "map": null,
+  "version": null,
+  "bots": null,
+  "player_names": [],
+  "error": "module 'a2s' has no attribute 'info'",
+  "updated_at": "2026-02-28 14:40:03 UTC"
 }
