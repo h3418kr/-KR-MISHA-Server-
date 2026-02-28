@@ -1,64 +1,56 @@
 import json
-import subprocess
+import socket
 from datetime import datetime
 from pathlib import Path
 
+import a2s
+
 SITE_DIR = Path(__file__).resolve().parent
-STATUS_PATH = SITE_DIR / 'status.json'
+STATUS_PATH = SITE_DIR / "status.json"
 
-CMD = ['cmd','/c','set PYTHONIOENCODING=utf-8&& python C:\\Users\\INHA\\.openclaw\\workspace\\query_rust_a2s.py']
+ADDRESS = ("64.31.11.50", 28245)
+TIMEOUT = 8.0
 
-from time import sleep
 
-RETRIES = 3
-BACKOFF = 2  # seconds multiplier
+def fetch_status():
+    socket.setdefaulttimeout(TIMEOUT)
+    info = a2s.info(ADDRESS)
+    players = a2s.players(ADDRESS)
 
-attempt = 0
-out = None
-lines = []
-while attempt < RETRIES:
-    attempt += 1
-    try:
-        out = subprocess.run(CMD, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=30)
-        if out.returncode == 0 and (out.stdout or '').strip():
-            break
-    except Exception as e:
-        # swallow and retry
-        out = None
-    if attempt < RETRIES:
-        sleep(BACKOFF * attempt)
+    player_names = []
+    for p in players:
+        name = (getattr(p, "name", "") or "").strip()
+        if name:
+            player_names.append(name)
 
-lines = (out.stdout or '').splitlines() if out and out.stdout else []
+    return {
+        "online": True,
+        "players": f"{getattr(info, 'player_count', 0)}/{getattr(info, 'max_players', 0)}",
+        "map": getattr(info, "map_name", None),
+        "version": getattr(info, "version", None),
+        "bots": int(getattr(info, "bot_count", 0) or 0),
+        "player_names": player_names,
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+    }
 
-data = {
-    'online': False,
-    'players': None,
-    'map': None,
-    'version': None,
-    'bots': None,
-    'player_names': [],
-    'updated_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-}
 
-if out.returncode == 0 and lines:
-    data['online'] = True
-    for line in lines:
-        line=line.strip()
-        if line.startswith('players '):
-            data['players'] = line.replace('players ','',1).strip()
-        elif line.startswith('map '):
-            data['map'] = line.replace('map ','',1).strip()
-        elif line.startswith('version '):
-            data['version'] = line.replace('version ','',1).strip()
-        elif line.startswith('bots '):
-            try:
-                data['bots'] = int(line.replace('bots ','',1).strip())
-            except Exception:
-                data['bots'] = None
-        elif line.startswith('player '):
-            name = line.replace('player ','',1).strip()
-            if name:
-                data['player_names'].append(name)
+def offline_payload(error_message: str):
+    return {
+        "online": False,
+        "players": None,
+        "map": None,
+        "version": None,
+        "bots": None,
+        "player_names": [],
+        "error": error_message,
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+    }
 
-STATUS_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+
+try:
+    data = fetch_status()
+except Exception as e:
+    data = offline_payload(str(e))
+
+STATUS_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 print(str(STATUS_PATH))
