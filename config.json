@@ -3,6 +3,7 @@
   "server_tagline": "2021년 이후 다시 준비중인 서버",
   "connect_address": "64.31.11.50:28310",
   "query_address": "64.31.11.50:28245",
+  "rankeval_dashboard_url": "http://64.31.11.50:28245",
   "discord_invite": "https://discord.gg/ZFDQacRDCB",
   "wipe_schedule": "2주",
   "balance": "바닐라/가벼운 QoL",

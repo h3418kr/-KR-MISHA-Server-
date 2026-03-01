@@ -199,6 +199,13 @@
         <div class="small mono" id="playersList" style="margin-top:10px"></div>
       </section>
 
+      <section class="card span12">
+        <h3 id="rankevalHeading">RankEval Dashboard</h3>
+        <div class="small" id="rankevalHint" style="margin-bottom:8px">대시보드 URL을 불러오는 중…</div>
+        <a class="btn" id="rankevalOpen" href="#" onclick="return false;">대시보드 열기</a>
+        <iframe id="rankevalFrame" title="RankEval Dashboard" style="display:none;width:100%;height:560px;border:1px solid rgba(255,255,255,.12);border-radius:12px;margin-top:10px;background:#0a0f1f"></iframe>
+      </section>
+
       <section class="card span7">
         <h3 id="featuresHeading">서버 소개 • 주요 기능</h3>
         <div class="list" id="featuresList">
@@ -297,6 +304,12 @@ const i18n = {
     statusOffline: 'Offline',
     statusUnknown: '상태 확인 불가',
     labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    rankevalHeading: 'RankEval 대시보드',
+    rankevalOpen: '대시보드 열기',
+    rankevalLoading: '대시보드 URL을 불러오는 중…',
+    rankevalNeedUrl: 'config.json에 rankeval_dashboard_url을 넣어주세요. (예: https://도메인/대시보드)',
+    rankevalHttpWarn: '현재 홈페이지는 HTTPS라서 HTTP 대시보드를 iframe으로 직접 띄울 수 없습니다. 버튼으로 새 탭에서 열어주세요.',
+    rankevalEmbedded: '대시보드 미리보기(임베드) 상태',
     featuresHeading: '서버 소개 • 주요 기능',
     highlightsHeading: '이번 주 하이라이트',
     wipeLabel:'Wipe', wipeValue:'2026-03-14 (2주후)', wipeDesc:'정확한 일정은 운영 공지에 업데이트하세요.',
@@ -340,6 +353,12 @@ const i18n = {
     statusOffline: 'Offline',
     statusUnknown: 'Status unavailable',
     labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    rankevalHeading: 'RankEval Dashboard',
+    rankevalOpen: 'Open Dashboard',
+    rankevalLoading: 'Loading dashboard URL…',
+    rankevalNeedUrl: 'Please set rankeval_dashboard_url in config.json (e.g., https://your-domain/dashboard).',
+    rankevalHttpWarn: 'This site is HTTPS, so HTTP dashboards cannot be embedded in an iframe. Use the button to open in a new tab.',
+    rankevalEmbedded: 'Dashboard preview (embedded)',
     featuresHeading: 'Server Overview • Features',
     highlightsHeading: 'This Week Highlights',
     wipeLabel:'Wipe', wipeValue:'2026-03-14 (in 2 weeks)', wipeDesc:'Exact schedule will be updated in announcements.',
@@ -371,6 +390,12 @@ const i18n = {
     statusOffline: 'Offline',
     statusUnknown: '状態を確認できません',
     labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    rankevalHeading: 'RankEval ダッシュボード',
+    rankevalOpen: 'ダッシュボードを開く',
+    rankevalLoading: 'ダッシュボードURLを読み込み中…',
+    rankevalNeedUrl: 'config.json に rankeval_dashboard_url を設定してください（例: https://ドメイン/dashboard）。',
+    rankevalHttpWarn: 'このサイトはHTTPSのため、HTTPダッシュボードはiframe埋め込みできません。ボタンで新しいタブで開いてください。',
+    rankevalEmbedded: 'ダッシュボードプレビュー（埋め込み）',
     featuresHeading: 'サーバー紹介 • 主な機能',
     highlightsHeading: '今週のハイライト',
     wipeLabel:'Wipe', wipeValue:'2026-03-14（2週間後）', wipeDesc:'正確な日程は運営告知で更新されます。',
@@ -405,6 +430,9 @@ function applyLanguage(){
   document.getElementById('mapLabel').textContent = L.labels.map;
   document.getElementById('versionLabel').textContent = L.labels.version;
   document.getElementById('botsLabel').textContent = L.labels.bots;
+  document.getElementById('rankevalHeading').textContent = L.rankevalHeading;
+  const rankBtn = document.getElementById('rankevalOpen');
+  if(rankBtn) rankBtn.textContent = L.rankevalOpen;
   document.getElementById('featuresHeading').textContent = L.featuresHeading;
   document.getElementById('featuresList').innerHTML = L.featuresHtml;
   document.getElementById('highlightsHeading').textContent = L.highlightsHeading;
@@ -437,6 +465,7 @@ async function loadConfig(){
     if(!res.ok) return;
     const c = await res.json();
     currentConfig = c;
+    applyRankEval(c);
 
     if(c.server_display_name){
       document.getElementById('brandName').textContent = c.server_display_name;
@@ -466,6 +495,40 @@ async function loadConfig(){
       join.onclick = () => { alert(t().joinPrefix + (c.connect_address||'')); return false; };
     }
   } catch(e) {}
+}
+
+function applyRankEval(c){
+  const hint = document.getElementById('rankevalHint');
+  const open = document.getElementById('rankevalOpen');
+  const frame = document.getElementById('rankevalFrame');
+  if(!hint || !open || !frame) return;
+
+  const raw = (c?.rankeval_dashboard_url || '').trim();
+  const fallback = c?.query_address ? `http://${c.query_address}` : '';
+  const url = raw || fallback;
+
+  if(!url){
+    hint.textContent = t().rankevalNeedUrl;
+    open.href = '#';
+    open.onclick = () => false;
+    frame.style.display = 'none';
+    return;
+  }
+
+  open.href = url;
+  open.target = '_blank';
+  open.rel = 'noopener noreferrer';
+  open.onclick = null;
+
+  if(url.startsWith('https://')){
+    frame.src = url;
+    frame.style.display = 'block';
+    hint.textContent = t().rankevalEmbedded;
+  } else {
+    frame.removeAttribute('src');
+    frame.style.display = 'none';
+    hint.textContent = t().rankevalHttpWarn;
+  }
 }
 
 async function loadStatus(){
