@@ -1,12 +1,11 @@
 {
   "online": true,
-  "players": "2/160",
+  "players": "1/160",
   "map": "Procedural Map",
   "version": "2621",
   "bots": 0,
   "player_names": [
-    "elana",
     "alexandria"
   ],
-  "updated_at": "2026-03-01 13:46:41 UTC"
+  "updated_at": "2026-03-01 14:12:00 UTC"
 }
