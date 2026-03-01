@@ -199,6 +199,18 @@
         <div class="small mono" id="playersList" style="margin-top:10px"></div>
       </section>
 
+      <section class="card span5">
+        <h3 id="leaderboardHeading">리더보드 (Top 5)</h3>
+        <div class="small mono" id="leaderboardUpdated" style="margin-bottom:8px">—</div>
+        <div id="leaderboardList" class="list">
+          <div class="item"><span>1</span><b>—</b><span class="small">—</span></div>
+          <div class="item"><span>2</span><b>—</b><span class="small">—</span></div>
+          <div class="item"><span>3</span><b>—</b><span class="small">—</span></div>
+          <div class="item"><span>4</span><b>—</b><span class="small">—</span></div>
+          <div class="item"><span>5</span><b>—</b><span class="small">—</span></div>
+        </div>
+      </section>
+
       <section class="card span7">
         <h3 id="featuresHeading">서버 소개 • 주요 기능</h3>
         <div class="list" id="featuresList">
@@ -297,6 +309,9 @@ const i18n = {
     statusOffline: 'Offline',
     statusUnknown: '상태 확인 불가',
     labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    leaderboardHeading: '리더보드 (Top 5)',
+    leaderboardEmpty: '아직 데이터가 없습니다',
+    leaderboardUpdatedPrefix: '업데이트:',
     featuresHeading: '서버 소개 • 주요 기능',
     highlightsHeading: '이번 주 하이라이트',
     wipeLabel:'Wipe', wipeValue:'2026-03-14 (2주후)', wipeDesc:'정확한 일정은 운영 공지에 업데이트하세요.',
@@ -340,6 +355,9 @@ const i18n = {
     statusOffline: 'Offline',
     statusUnknown: 'Status unavailable',
     labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    leaderboardHeading: 'Leaderboard (Top 5)',
+    leaderboardEmpty: 'No data yet',
+    leaderboardUpdatedPrefix: 'Updated:',
     featuresHeading: 'Server Overview • Features',
     highlightsHeading: 'This Week Highlights',
     wipeLabel:'Wipe', wipeValue:'2026-03-14 (in 2 weeks)', wipeDesc:'Exact schedule will be updated in announcements.',
@@ -371,6 +389,9 @@ const i18n = {
     statusOffline: 'Offline',
     statusUnknown: '状態を確認できません',
     labels: { players:'Players', map:'Map', version:'Version', bots:'Bots' },
+    leaderboardHeading: 'ランキング (Top 5)',
+    leaderboardEmpty: 'データがありません',
+    leaderboardUpdatedPrefix: '更新:',
     featuresHeading: 'サーバー紹介 • 主な機能',
     highlightsHeading: '今週のハイライト',
     wipeLabel:'Wipe', wipeValue:'2026-03-14（2週間後）', wipeDesc:'正確な日程は運営告知で更新されます。',
@@ -405,6 +426,7 @@ function applyLanguage(){
   document.getElementById('mapLabel').textContent = L.labels.map;
   document.getElementById('versionLabel').textContent = L.labels.version;
   document.getElementById('botsLabel').textContent = L.labels.bots;
+  document.getElementById('leaderboardHeading').textContent = L.leaderboardHeading;
   document.getElementById('featuresHeading').textContent = L.featuresHeading;
   document.getElementById('featuresList').innerHTML = L.featuresHtml;
   document.getElementById('highlightsHeading').textContent = L.highlightsHeading;
@@ -496,11 +518,45 @@ async function loadStatus(){
   }
 }
 
+function renderLeaderboardRows(rows){
+  const list = document.getElementById('leaderboardList');
+  const updated = document.getElementById('leaderboardUpdated');
+  if(!list || !updated) return;
+
+  if(!rows || !rows.length){
+    list.innerHTML = `<div class="item"><b>${t().leaderboardEmpty}</b></div>`;
+    updated.textContent = `${t().leaderboardUpdatedPrefix} —`;
+    return;
+  }
+
+  list.innerHTML = rows.slice(0,5).map((r, idx)=>{
+    const name = (r.name || r.player || r.nick || 'Unknown');
+    const value = (r.value ?? r.score ?? r.kills ?? r.points ?? '—');
+    return `<div class="item"><span>${idx+1}</span><b>${name}</b><span class="small">${value}</span></div>`;
+  }).join('');
+}
+
+async function loadLeaderboard(){
+  const updated = document.getElementById('leaderboardUpdated');
+  try{
+    const res = await fetch('./rank.json?ts='+Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const d = await res.json();
+    const rows = Array.isArray(d) ? d : (d.leaderboard || d.rows || d.top || []);
+    renderLeaderboardRows(rows);
+    const ts = (d.updated_at || d.updatedAt || d.timestamp || '—');
+    if(updated) updated.textContent = `${t().leaderboardUpdatedPrefix} ${ts}`;
+  }catch(e){
+    renderLeaderboardRows([]);
+  }
+}
+
 function setLang(lang){
   currentLang = lang;
   localStorage.setItem('lang', lang);
   applyLanguage();
   loadStatus();
+  loadLeaderboard();
 }
 
 document.getElementById('langKo').addEventListener('click', ()=>setLang('ko'));
@@ -511,7 +567,9 @@ document.getElementById('refreshBtn').addEventListener('click', loadStatus);
 applyLanguage();
 loadConfig();
 loadStatus();
+loadLeaderboard();
 setInterval(loadStatus, 60000);
+setInterval(loadLeaderboard, 120000);
 </script>
 </body>
 </html>
