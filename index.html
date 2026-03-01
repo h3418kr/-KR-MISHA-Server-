@@ -481,7 +481,18 @@ async function loadStatus(){
     statusText.textContent = online ? t().statusOnline : t().statusOffline;
     led.className = 'led ' + (online ? 'ok' : 'bad');
 
-    updatedAt.textContent = d.updated_at || '—';
+    // Convert UTC timestamp to Asia/Seoul (KST) for display
+    if(d.updated_at){
+      try{
+        // ensure the date string is parsed as UTC
+        const utc = new Date(d.updated_at.endsWith('Z') ? d.updated_at : d.updated_at + 'Z');
+        updatedAt.textContent = utc.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+      }catch(e){
+        updatedAt.textContent = d.updated_at || '—';
+      }
+    } else {
+      updatedAt.textContent = '—';
+    }
     document.getElementById('players').textContent = d.players || '—';
     document.getElementById('map').textContent = d.map || '—';
     document.getElementById('version').textContent = d.version || '—';
