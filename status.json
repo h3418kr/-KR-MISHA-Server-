@@ -1,16 +1,10 @@
 {
-  "online": true,
-  "players": "6/160",
-  "map": "Procedural Map",
-  "version": "2621",
-  "bots": 0,
-  "player_names": [
-    "aldo",
-    "renate",
-    "marth",
-    "jerrod",
-    "lacresha",
-    "patsy"
-  ],
-  "updated_at": "2026-03-02 13:41:26 UTC"
+  "online": false,
+  "players": null,
+  "map": null,
+  "version": null,
+  "bots": null,
+  "player_names": [],
+  "error": "timed out",
+  "updated_at": "2026-03-02 14:27:29 UTC"
 }
