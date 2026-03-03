@@ -451,6 +451,26 @@ const i18n = {
 
 function t(){ return i18n[currentLang] || i18n.ko; }
 
+function localizeConfigText(kind, value){
+  if(!value) return value;
+  const v = String(value).trim();
+  const dict = {
+    tagline: {
+      '2021년 이후 다시 준비중인 서버': { en: 'A server being prepared again since 2021', ja: '2021年以降、再始動準備中のサーバー' }
+    },
+    balance: {
+      '바닐라/가벼운 QoL': { en: 'Vanilla / Light QoL', ja: 'バニラ / 軽量QoL' }
+    },
+    wipe: {
+      '2주': { en: '2 weeks', ja: '2週間' }
+    }
+  };
+
+  const row = dict[kind]?.[v];
+  if(!row) return v;
+  return row[currentLang] || v;
+}
+
 function applyLanguage(){
   const L = t();
   document.documentElement.lang = currentLang;
@@ -484,12 +504,15 @@ function applyLanguage(){
   document.getElementById('footerText').textContent = L.footer;
 
   const hd = document.getElementById('heroDesc');
-  if (hd && !currentConfig.server_tagline) hd.textContent = L.heroDescFallback;
+  if (hd) {
+    if (currentConfig.server_tagline) hd.textContent = localizeConfigText('tagline', currentConfig.server_tagline);
+    else hd.textContent = L.heroDescFallback;
+  }
 
   const bt = document.getElementById('balanceText');
-  if (bt && currentConfig.balance) bt.textContent = L.balancePrefix + currentConfig.balance;
+  if (bt && currentConfig.balance) bt.textContent = L.balancePrefix + localizeConfigText('balance', currentConfig.balance);
   const wt = document.getElementById('wipeText');
-  if (wt && currentConfig.wipe_schedule) wt.textContent = L.wipePrefix + currentConfig.wipe_schedule;
+  if (wt && currentConfig.wipe_schedule) wt.textContent = L.wipePrefix + localizeConfigText('wipe', currentConfig.wipe_schedule);
 
   document.querySelectorAll('.actions .btn').forEach(b=>b.style.outline='none');
   const active = document.getElementById(currentLang==='ko'?'langKo':currentLang==='en'?'langEn':'langJa');
@@ -509,11 +532,11 @@ async function loadConfig(){
       document.getElementById('heroTitle').innerHTML = c.server_display_name;
     }
     const hd=document.getElementById('heroDesc');
-    if(hd) hd.textContent = c.server_tagline || t().heroDescFallback;
+    if(hd) hd.textContent = c.server_tagline ? localizeConfigText('tagline', c.server_tagline) : t().heroDescFallback;
 
     const ca=document.getElementById('connectAddr'); if(ca && c.connect_address) ca.textContent=c.connect_address;
-    const bt=document.getElementById('balanceText'); if(bt && c.balance) bt.textContent=t().balancePrefix + c.balance;
-    const wt=document.getElementById('wipeText'); if(wt && c.wipe_schedule) wt.textContent=t().wipePrefix + c.wipe_schedule;
+    const bt=document.getElementById('balanceText'); if(bt && c.balance) bt.textContent=t().balancePrefix + localizeConfigText('balance', c.balance);
+    const wt=document.getElementById('wipeText'); if(wt && c.wipe_schedule) wt.textContent=t().wipePrefix + localizeConfigText('wipe', c.wipe_schedule);
 
     const addr=document.getElementById('addr'); if(addr && c.query_address) addr.textContent='Query: '+c.query_address;
 
