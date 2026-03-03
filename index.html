@@ -181,14 +181,14 @@
     </section>
 
     <section class="card" style="margin-bottom:14px">
-      <h3>업데이트 소식</h3>
+      <h3 id="newsHeading">업데이트 소식</h3>
       <div class="list" style="margin-top:8px">
         <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
-          <div style="font-weight:800">📢 Misha Server 글로벌 업데이트 (2026.03.03)</div>
-          <div class="small">이제 AI 채팅 번역으로 외국인 유저와도 자유롭게 대화하세요!</div>
-          <div class="small">✅ AI 번역 기능 추가: 한국어, 영어, 일본어 등 완벽 지원</div>
-          <div class="small">✅ 글로벌 서버 도약: 전 세계 플레이어 누구나 환영</div>
-          <div class="small">✅ 더 넓어진 소통: 레이드도, 팀플도 언어 걱정 없이!</div>
+          <div id="newsTitle" style="font-weight:800">📢 Misha Server 글로벌 업데이트 (2026.03.03)</div>
+          <div class="small" id="newsLine1">이제 AI 채팅 번역으로 외국인 유저와도 자유롭게 대화하세요!</div>
+          <div class="small" id="newsLine2">✅ AI 번역 기능 추가: 한국어, 영어, 일본어 등 완벽 지원</div>
+          <div class="small" id="newsLine3">✅ 글로벌 서버 도약: 전 세계 플레이어 누구나 환영</div>
+          <div class="small" id="newsLine4">✅ 더 넓어진 소통: 레이드도, 팀플도 언어 걱정 없이!</div>
         </div>
       </div>
     </section>
@@ -333,6 +333,12 @@ const i18n = {
     playersListPrefix:'Players: ',
     discordPending:'디스코드 링크는 아직 준비중입니다.',
     joinPrefix:'서버 접속: ',
+    newsHeading:'업데이트 소식',
+    newsTitle:'📢 Misha Server 글로벌 업데이트 (2026.03.03)',
+    newsLine1:'이제 AI 채팅 번역으로 외국인 유저와도 자유롭게 대화하세요!',
+    newsLine2:'✅ AI 번역 기능 추가: 한국어, 영어, 일본어 등 완벽 지원',
+    newsLine3:'✅ 글로벌 서버 도약: 전 세계 플레이어 누구나 환영',
+    newsLine4:'✅ 더 넓어진 소통: 레이드도, 팀플도 언어 걱정 없이!',
     featuresHtml:`
       <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
         <div style="font-weight:800">🎮 미샤서버(Misha Server)</div>
@@ -382,6 +388,12 @@ const i18n = {
     playersListPrefix:'Players: ',
     discordPending:'Discord link is not ready yet.',
     joinPrefix:'Connect: ',
+    newsHeading:'Update News',
+    newsTitle:'📢 Misha Server Global Update (2026.03.03)',
+    newsLine1:'Now chat freely with international players using AI chat translation!',
+    newsLine2:'✅ AI translation added: full support for Korean, English, Japanese, and more',
+    newsLine3:'✅ Going global: players from all over the world are welcome',
+    newsLine4:'✅ Better communication: raid and teamplay with no language barrier',
     featuresHtml:`
       <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
         <div style="font-weight:800">🎮 Misha Server</div>
@@ -419,6 +431,12 @@ const i18n = {
     playersListPrefix:'Players: ',
     discordPending:'Discordリンクはまだ準備中です。',
     joinPrefix:'接続先: ',
+    newsHeading:'アップデート情報',
+    newsTitle:'📢 Misha Server グローバルアップデート (2026.03.03)',
+    newsLine1:'AIチャット翻訳で海外プレイヤーとも自由に会話できます！',
+    newsLine2:'✅ AI翻訳機能を追加：韓国語・英語・日本語などをしっかりサポート',
+    newsLine3:'✅ グローバルサーバーへ：世界中のプレイヤーを歓迎',
+    newsLine4:'✅ もっと広がる連携：レイドもチームプレイも言語の心配なし',
     featuresHtml:`
       <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
         <div style="font-weight:800">🎮 ミシャサーバー (Misha Server)</div>
@@ -446,6 +464,12 @@ function applyLanguage(){
   document.getElementById('rankevalHeading').textContent = L.rankevalHeading;
   const rankBtn = document.getElementById('rankevalOpen');
   if(rankBtn) rankBtn.textContent = L.rankevalOpen;
+  document.getElementById('newsHeading').textContent = L.newsHeading;
+  document.getElementById('newsTitle').textContent = L.newsTitle;
+  document.getElementById('newsLine1').textContent = L.newsLine1;
+  document.getElementById('newsLine2').textContent = L.newsLine2;
+  document.getElementById('newsLine3').textContent = L.newsLine3;
+  document.getElementById('newsLine4').textContent = L.newsLine4;
   document.getElementById('featuresHeading').textContent = L.featuresHeading;
   document.getElementById('featuresList').innerHTML = L.featuresHtml;
   document.getElementById('highlightsHeading').textContent = L.highlightsHeading;
