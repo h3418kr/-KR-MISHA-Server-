@@ -1,6 +1,6 @@
 {
   "online": true,
-  "players": "7/160",
+  "players": "5/160",
   "map": "Procedural Map",
   "version": "2621",
   "bots": 0,
@@ -8,10 +8,8 @@
     "forrest",
     "shara",
     "vinnie",
-    "marget",
     "otis",
-    "juliana",
-    "lamar"
+    "juliana"
   ],
-  "updated_at": "2026-03-03 10:07:24 UTC"
+  "updated_at": "2026-03-03 10:59:50 UTC"
 }
