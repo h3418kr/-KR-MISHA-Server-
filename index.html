@@ -271,11 +271,6 @@
         <h3 id="highlightsHeading">이번 주 하이라이트</h3>
         <div class="twocol">
           <div class="kbox">
-            <div class="k" id="wipeLabel">Wipe</div>
-            <div class="v" id="wipeValue">2026-03-14 (2주후)</div>
-            <div class="small" id="wipeDesc">정확한 일정은 운영 공지에 업데이트하세요.</div>
-          </div>
-          <div class="kbox">
             <div class="k" id="rulesLabel">Rules</div>
             <div class="v" id="rulesValue">3가지</div>
             <div class="small" id="rulesDesc">1. 즐겁게 · 2. 파이팅 넘치게 · 3. 핵 금지</div>
@@ -325,7 +320,7 @@ const i18n = {
     rankevalEmbedded: '대시보드 미리보기(임베드) 상태',
     featuresHeading: '서버 소개 • 주요 기능',
     highlightsHeading: '이번 주 하이라이트',
-    wipeLabel:'Wipe', wipeValue:'2026-03-14 (2주후)', wipeDesc:'정확한 일정은 운영 공지에 업데이트하세요.',
+    wipeLabel:'', wipeValue:'', wipeDesc:'',
     rulesLabel:'Rules', rulesValue:'3가지', rulesDesc:'1. 즐겁게 · 2. 파이팅 넘치게 · 3. 핵 금지',
     reportTitle:'신고 방법',
     reportBody:'인게임에서 <b>F7</b> 키를 눌러 플레이어를 신고해 주세요. 신고 시 가능한 증거(스크린샷, 녹화, 시간대)를 함께 제출하시면 처리에 도움이 됩니다.',
@@ -372,7 +367,7 @@ const i18n = {
     rankevalEmbedded: 'Dashboard preview (embedded)',
     featuresHeading: 'Server Overview • Features',
     highlightsHeading: 'This Week Highlights',
-    wipeLabel:'Wipe', wipeValue:'2026-03-14 (in 2 weeks)', wipeDesc:'Exact schedule will be updated in announcements.',
+    wipeLabel:'', wipeValue:'', wipeDesc:'',
     rulesLabel:'Rules', rulesValue:'3 rules', rulesDesc:'1. Have fun · 2. Be competitive · 3. No cheats',
     reportTitle:'How to Report',
     reportBody:'Press <b>F7</b> in-game to report a player. Please include available evidence (screenshots, recordings, and time range) for faster handling.',
@@ -413,7 +408,7 @@ const i18n = {
     rankevalEmbedded: 'ダッシュボードプレビュー（埋め込み）',
     featuresHeading: 'サーバー紹介 • 主な機能',
     highlightsHeading: '今週のハイライト',
-    wipeLabel:'Wipe', wipeValue:'2026-03-14（2週間後）', wipeDesc:'正確な日程は運営告知で更新されます。',
+    wipeLabel:'', wipeValue:'', wipeDesc:'',
     rulesLabel:'Rules', rulesValue:'3つ', rulesDesc:'1. 楽しく · 2. 全力で · 3. チート禁止',
     reportTitle:'通報方法',
     reportBody:'ゲーム内で <b>F7</b> キーを押して通報してください。処理を円滑にするため、証拠（スクリーンショット・録画・時間帯）も添付してください。',
@@ -481,9 +476,9 @@ function applyLanguage(){
   document.getElementById('featuresHeading').textContent = L.featuresHeading;
   document.getElementById('featuresList').innerHTML = L.featuresHtml;
   document.getElementById('highlightsHeading').textContent = L.highlightsHeading;
-  document.getElementById('wipeLabel').textContent = L.wipeLabel;
-  document.getElementById('wipeValue').textContent = L.wipeValue;
-  document.getElementById('wipeDesc').textContent = L.wipeDesc;
+  const wl = document.getElementById('wipeLabel'); if (wl) wl.textContent = L.wipeLabel;
+  const wv = document.getElementById('wipeValue'); if (wv) wv.textContent = L.wipeValue;
+  const wd = document.getElementById('wipeDesc'); if (wd) wd.textContent = L.wipeDesc;
   document.getElementById('rulesLabel').textContent = L.rulesLabel;
   document.getElementById('rulesValue').textContent = L.rulesValue;
   document.getElementById('rulesDesc').textContent = L.rulesDesc;
