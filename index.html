@@ -162,7 +162,7 @@
         <button class="btn" id="langJa" type="button">JP</button>
         <span class="pill mono" id="updatedAt">—</span>
         <button class="btn" id="refreshBtn" type="button">새로고침</button>
-        <a class="btn discord icon" id="discordBtn" href="#" onclick="return false;" title="디스코드(준비중)">Discord</a>
+        <a class="btn discord icon" id="discordBtn" href="#" onclick="return false;" title="디스코드">Discord</a>
         <a class="btn primary" id="joinBtn" href="#" onclick="return false;">JOIN</a>
       </div>
     </div>
@@ -326,7 +326,7 @@ const i18n = {
     reportBody:'인게임에서 <b>F7</b> 키를 눌러 플레이어를 신고해 주세요. 신고 시 가능한 증거(스크린샷, 녹화, 시간대)를 함께 제출하시면 처리에 도움이 됩니다.',
     footer:'Powered by OpenClaw',
     playersListPrefix:'Players: ',
-    discordPending:'디스코드 링크는 아직 준비중입니다.',
+    discordPending:'디스코드 링크를 확인할 수 없습니다.',
     joinPrefix:'서버 접속: ',
     newsHeading:'업데이트 소식',
     newsTitle:'📢 Misha Server 글로벌 업데이트 (2026.03.03)',
@@ -377,7 +377,7 @@ const i18n = {
     reportBody:'Press <b>F7</b> in-game to report a player. Please include available evidence (screenshots, recordings, and time range) for faster handling.',
     footer:'Powered by OpenClaw',
     playersListPrefix:'Players: ',
-    discordPending:'Discord link is not ready yet.',
+    discordPending:'Discord link is unavailable.',
     joinPrefix:'Connect: ',
     newsHeading:'Update News',
     newsTitle:'📢 Misha Server Global Update (2026.03.03)',
@@ -419,7 +419,7 @@ const i18n = {
     reportBody:'ゲーム内で <b>F7</b> キーを押して通報してください。処理を円滑にするため、証拠（スクリーンショット・録画・時間帯）も添付してください。',
     footer:'Powered by OpenClaw',
     playersListPrefix:'Players: ',
-    discordPending:'Discordリンクはまだ準備中です。',
+    discordPending:'Discordリンクを確認できません。',
     joinPrefix:'接続先: ',
     newsHeading:'アップデート情報',
     newsTitle:'📢 Misha Server グローバルアップデート (2026.03.03)',
@@ -596,9 +596,15 @@ async function loadStatus(){
     // Convert UTC timestamp to Asia/Seoul (KST) for display
     if(d.updated_at){
       try{
-        // ensure the date string is parsed as UTC
-        const utc = new Date(d.updated_at.endsWith('Z') ? d.updated_at : d.updated_at + 'Z');
-        updatedAt.textContent = utc.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        const raw = String(d.updated_at).trim();
+        // Handles formats like "2026-03-04 16:30:26 UTC"
+        const normalized = raw.replace(' UTC', 'Z').replace(' ', 'T');
+        const utc = new Date(normalized);
+        if (isNaN(utc.getTime())) throw new Error('invalid date');
+
+        const datePart = utc.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
+        const timePart = utc.toLocaleTimeString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false });
+        updatedAt.textContent = `${datePart} ${timePart} KST`;
       }catch(e){
         updatedAt.textContent = d.updated_at || '—';
       }
