@@ -188,6 +188,7 @@
           <div class="small" id="newsLine2">✅ AI 번역 기능 추가: 한국어, 영어, 일본어 등 완벽 지원</div>
           <div class="small" id="newsLine3">✅ 글로벌 서버 도약: 전 세계 플레이어 누구나 환영</div>
           <div class="small" id="newsLine4">✅ 더 넓어진 소통: 레이드도, 팀플도 언어 걱정 없이!</div>
+          <div class="small" id="newsLine5">[업데이트] 더욱 똑똑해진 인게임 AI 어시스턴트, AiA 1.0.0 출시! 이제 게임 내에서 궁금한 점을 AiA에게 바로 물어보세요. 실시간 답변 서비스로 플레이어의 생존을 지원합니다. <b>/aia 러스트에대한 궁금한점입력 후 엔터</b></div>
         </div>
       </div>
     </section>
@@ -333,6 +334,7 @@ const i18n = {
     newsLine2:'✅ AI 번역 기능 추가: 한국어, 영어, 일본어 등 완벽 지원',
     newsLine3:'✅ 글로벌 서버 도약: 전 세계 플레이어 누구나 환영',
     newsLine4:'✅ 더 넓어진 소통: 레이드도, 팀플도 언어 걱정 없이!',
+    newsLine5:'[업데이트] 더욱 똑똑해진 인게임 AI 어시스턴트, AiA 1.0.0 출시! 이제 게임 내에서 궁금한 점을 AiA에게 바로 물어보세요. 실시간 답변 서비스로 플레이어의 생존을 지원합니다. /aia 러스트에대한 궁금한점입력 후 엔터',
     featuresHtml:`
       <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
         <div style="font-weight:800">🎮 미샤서버(Misha Server)</div>
@@ -384,6 +386,7 @@ const i18n = {
     newsLine2:'✅ AI translation added: full support for Korean, English, Japanese, and more',
     newsLine3:'✅ Going global: players from all over the world are welcome',
     newsLine4:'✅ Better communication: raid and teamplay with no language barrier',
+    newsLine5:'[Update] Smarter in-game AI assistant, AiA 1.0.0, is now live! Ask AiA your Rust questions directly in-game. Real-time answers support your survival. /aia <your Rust question> then press Enter',
     featuresHtml:`
       <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
         <div style="font-weight:800">🎮 Misha Server</div>
@@ -426,6 +429,7 @@ const i18n = {
     newsLine2:'✅ AI翻訳機能を追加：韓国語・英語・日本語などをしっかりサポート',
     newsLine3:'✅ グローバルサーバーへ：世界中のプレイヤーを歓迎',
     newsLine4:'✅ もっと広がる連携：レイドもチームプレイも言語の心配なし',
+    newsLine5:'[アップデート] さらに賢くなったゲーム内AIアシスタント、AiA 1.0.0をリリース！ゲーム内で気になることをAiAに直接質問できます。リアルタイム回答で生存をサポート。/aia <Rustの質問> を入力してEnter',
     featuresHtml:`
       <div class="item" style="flex-direction:column;align-items:flex-start;gap:8px">
         <div style="font-weight:800">🎮 ミシャサーバー (Misha Server)</div>
@@ -477,6 +481,7 @@ function applyLanguage(){
   document.getElementById('newsLine2').textContent = L.newsLine2;
   document.getElementById('newsLine3').textContent = L.newsLine3;
   document.getElementById('newsLine4').textContent = L.newsLine4;
+  document.getElementById('newsLine5').textContent = L.newsLine5;
   document.getElementById('featuresHeading').textContent = L.featuresHeading;
   document.getElementById('featuresList').innerHTML = L.featuresHtml;
   document.getElementById('highlightsHeading').textContent = L.highlightsHeading;
