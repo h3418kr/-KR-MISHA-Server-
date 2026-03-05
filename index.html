@@ -107,7 +107,7 @@
       .actions .btn,.actions .pill{justify-content:center;text-align:center;padding:9px 8px;font-size:12px;min-height:38px}
       .actions #langKo,.actions #langEn,.actions #langJa{font-weight:800}
       .actions #updatedAt{grid-column:span 4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .actions #refreshBtn,.actions #discordBtn,.actions #joinBtn{grid-column:span 2}
+      .actions #discordBtn,.actions #joinBtn{grid-column:span 2}
 
       .hero{padding:18px 12px;border-radius:16px}
       .hero h1{font-size:28px;letter-spacing:.5px}
@@ -161,7 +161,6 @@
         <button class="btn" id="langEn" type="button">EN</button>
         <button class="btn" id="langJa" type="button">JP</button>
         <span class="pill mono" id="updatedAt">—</span>
-        <button class="btn" id="refreshBtn" type="button">새로고침</button>
         <a class="btn discord icon" id="discordBtn" href="#" onclick="return false;" title="디스코드">Discord</a>
         <a class="btn primary" id="joinBtn" href="#" onclick="return false;">JOIN</a>
       </div>
@@ -464,7 +463,6 @@ function applyLanguage(){
   const L = t();
   document.documentElement.lang = currentLang;
   document.title = L.title;
-  document.getElementById('refreshBtn').textContent = L.refresh;
   document.getElementById('statusHeading').textContent = L.statusHeading;
   document.getElementById('playersLabel').textContent = L.labels.players;
   document.getElementById('mapLabel').textContent = L.labels.map;
@@ -583,7 +581,6 @@ function applyRankEval(c){
 async function loadStatus(){
   const led = document.getElementById('led');
   const statusText = document.getElementById('statusText');
-  const updatedAt = document.getElementById('updatedAt');
   try{
     const res = await fetch('./status.json?ts='+Date.now(), {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
@@ -593,24 +590,6 @@ async function loadStatus(){
     statusText.textContent = online ? t().statusOnline : t().statusOffline;
     led.className = 'led ' + (online ? 'ok' : 'bad');
 
-    // Convert UTC timestamp to Asia/Seoul (KST) for display
-    if(d.updated_at){
-      try{
-        const raw = String(d.updated_at).trim();
-        // Handles formats like "2026-03-04 16:30:26 UTC"
-        const normalized = raw.replace(' UTC', 'Z').replace(' ', 'T');
-        const utc = new Date(normalized);
-        if (isNaN(utc.getTime())) throw new Error('invalid date');
-
-        const datePart = utc.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
-        const timePart = utc.toLocaleTimeString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false });
-        updatedAt.textContent = `${datePart} ${timePart} KST`;
-      }catch(e){
-        updatedAt.textContent = d.updated_at || '—';
-      }
-    } else {
-      updatedAt.textContent = '—';
-    }
     document.getElementById('players').textContent = d.players || '—';
     document.getElementById('map').textContent = d.map || '—';
     document.getElementById('version').textContent = d.version || '—';
@@ -621,7 +600,6 @@ async function loadStatus(){
   } catch(e){
     statusText.textContent = t().statusUnknown;
     led.className = 'led bad';
-    updatedAt.textContent = '—';
   }
 }
 
@@ -632,15 +610,25 @@ function setLang(lang){
   loadStatus();
 }
 
+function tickKstClock(){
+  const el = document.getElementById('updatedAt');
+  if(!el) return;
+  const now = new Date();
+  const datePart = now.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
+  const timePart = now.toLocaleTimeString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false });
+  el.textContent = `${datePart} ${timePart} KST`;
+}
+
 document.getElementById('langKo').addEventListener('click', ()=>setLang('ko'));
 document.getElementById('langEn').addEventListener('click', ()=>setLang('en'));
 document.getElementById('langJa').addEventListener('click', ()=>setLang('ja'));
-document.getElementById('refreshBtn').addEventListener('click', loadStatus);
 
 applyLanguage();
 loadConfig();
 loadStatus();
+tickKstClock();
 setInterval(loadStatus, 60000);
+setInterval(tickKstClock, 1000);
 </script>
 </body>
 </html>
