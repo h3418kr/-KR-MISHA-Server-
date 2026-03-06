@@ -195,24 +195,6 @@
     </section>
 
     <div class="grid">
-      <section class="card">
-        <h3 id="statusHeading">SERVER STATUS</h3>
-        <div class="kpi">
-          <div class="badge">
-            <span class="led ok" id="led"></span>
-            <span class="big" id="statusText">Online</span>
-          </div>
-          <div class="small" id="addr">Query: 64.31.11.50:28245</div>
-        </div>
-        <div class="kpiRow" style="margin-top:12px">
-          <div class="kbox"><div class="k" id="playersLabel">Players</div><div class="v" id="players">—</div></div>
-          <div class="kbox"><div class="k" id="mapLabel">Map</div><div class="v" id="map">—</div></div>
-          <div class="kbox"><div class="k" id="versionLabel">Version</div><div class="v" id="version">—</div></div>
-          <div class="kbox"><div class="k" id="botsLabel">Bots</div><div class="v" id="bots">—</div></div>
-        </div>
-        <div class="small mono" id="playersList" style="margin-top:10px"></div>
-      </section>
-
       <section class="card span12">
         <h3 id="rankevalHeading">RankEval Dashboard</h3>
         <div class="small" id="rankevalHint" style="margin-bottom:8px">대시보드 URL을 불러오는 중…</div>
@@ -472,11 +454,11 @@ function applyLanguage(){
   const L = t();
   document.documentElement.lang = currentLang;
   document.title = L.title;
-  document.getElementById('statusHeading').textContent = L.statusHeading;
-  document.getElementById('playersLabel').textContent = L.labels.players;
-  document.getElementById('mapLabel').textContent = L.labels.map;
-  document.getElementById('versionLabel').textContent = L.labels.version;
-  document.getElementById('botsLabel').textContent = L.labels.bots;
+  const sh = document.getElementById('statusHeading'); if (sh) sh.textContent = L.statusHeading;
+  const pl = document.getElementById('playersLabel'); if (pl) pl.textContent = L.labels.players;
+  const ml = document.getElementById('mapLabel'); if (ml) ml.textContent = L.labels.map;
+  const vl = document.getElementById('versionLabel'); if (vl) vl.textContent = L.labels.version;
+  const bl = document.getElementById('botsLabel'); if (bl) bl.textContent = L.labels.bots;
   document.getElementById('rankevalHeading').textContent = L.rankevalHeading;
   const rankBtn = document.getElementById('rankevalOpen');
   if(rankBtn) rankBtn.textContent = L.rankevalOpen;
@@ -592,6 +574,15 @@ function applyRankEval(c){
 async function loadStatus(){
   const led = document.getElementById('led');
   const statusText = document.getElementById('statusText');
+  const playersEl = document.getElementById('players');
+  const mapEl = document.getElementById('map');
+  const versionEl = document.getElementById('version');
+  const botsEl = document.getElementById('bots');
+  const playersListEl = document.getElementById('playersList');
+
+  // SERVER STATUS section removed: skip status rendering if elements do not exist
+  if(!led || !statusText || !playersEl || !mapEl || !versionEl || !botsEl || !playersListEl) return;
+
   try{
     const res = await fetch('./status.json?ts='+Date.now(), {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
@@ -601,13 +592,13 @@ async function loadStatus(){
     statusText.textContent = online ? t().statusOnline : t().statusOffline;
     led.className = 'led ' + (online ? 'ok' : 'bad');
 
-    document.getElementById('players').textContent = d.players || '—';
-    document.getElementById('map').textContent = d.map || '—';
-    document.getElementById('version').textContent = d.version || '—';
-    document.getElementById('bots').textContent = (d.bots ?? '—');
+    playersEl.textContent = d.players || '—';
+    mapEl.textContent = d.map || '—';
+    versionEl.textContent = d.version || '—';
+    botsEl.textContent = (d.bots ?? '—');
 
     const list = (d.player_names && d.player_names.length) ? (t().playersListPrefix + d.player_names.join(', ')) : '';
-    document.getElementById('playersList').textContent = list;
+    playersListEl.textContent = list;
   } catch(e){
     statusText.textContent = t().statusUnknown;
     led.className = 'led bad';
