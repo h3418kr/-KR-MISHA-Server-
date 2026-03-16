@@ -1,6 +1,6 @@
 {
   "online": true,
-  "players": "4/160",
+  "players": "5/160",
   "map": "Procedural Map",
   "version": "2622",
   "bots": 0,
@@ -10,5 +10,5 @@
     "franklin",
     "yadira"
   ],
-  "updated_at": "2026-03-16 07:44:42 UTC"
+  "updated_at": "2026-03-16 08:41:32 UTC"
 }
