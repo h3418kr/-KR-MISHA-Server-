@@ -1,10 +1,11 @@
 {
-  "online": false,
-  "players": null,
-  "map": null,
-  "version": null,
-  "bots": null,
-  "player_names": [],
-  "error": "timed out",
-  "updated_at": "2026-03-19 09:59:43 UTC"
+  "online": true,
+  "players": "1/160",
+  "map": "Procedural Map",
+  "version": "2622",
+  "bots": 0,
+  "player_names": [
+    "jammie"
+  ],
+  "updated_at": "2026-03-19 10:56:37 UTC"
 }
