@@ -1,9 +1,10 @@
 {
-  "online": true,
-  "players": "0/160",
-  "map": "Custom Map",
-  "version": "2622",
-  "bots": 0,
+  "online": false,
+  "players": null,
+  "map": null,
+  "version": null,
+  "bots": null,
   "player_names": [],
-  "updated_at": "2026-03-30 09:19:50 UTC"
+  "error": "timed out",
+  "updated_at": "2026-03-30 10:42:49 UTC"
 }
