@@ -1,11 +1,9 @@
 {
   "online": true,
-  "players": "1/160",
+  "players": "0/160",
   "map": "Custom Map",
   "version": "2623",
   "bots": 0,
-  "player_names": [
-    "bernice"
-  ],
-  "updated_at": "2026-04-06 09:15:31 UTC"
+  "player_names": [],
+  "updated_at": "2026-04-06 10:34:04 UTC"
 }
